@@ -5,32 +5,32 @@ module.exports = {
   'hexSpacing': 3,
   'hexTypes': [
     {
-      'color': '#ff0',
+      'color': '#151E3F',
       'count': 8,
       'type': 'gem'
     },
     {
-      'color': '#f0f',
+      'color': '#030027',
       'count': 8,
       'type': 'gem'
     },
     {
-      'color': '#0ff',
+      'color': '#F2F3D9',
       'count': 8,
       'type': 'gem'
     },
     {
-      'color': '#333',
+      'color': '#DC9E82',
       'count': 8,
       'type': 'gem'
     },
     {
-      'color': '#0f0',
+      'color': '#C16E70',
       'count': 8,
       'type': 'gem'
     },
     {
-      'color': '#f00',
+      'color': '#757389',
       'count': 8,
       'type': 'gem'
     }

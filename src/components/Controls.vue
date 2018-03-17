@@ -6,6 +6,9 @@
     <button type="button" v-on:click="clear">
       Clear Board
     </button>
+    <button type="button" v-on:click="deleteR">
+      Delete Random
+    </button>
   </div>
 </template>
 
@@ -18,6 +21,9 @@ export default {
     },
     clear () {
       this.$store.dispatch('clearBoard')
+    },
+    deleteR () {
+      this.$store.dispatch('deleteRandom')
     }
   }
 }

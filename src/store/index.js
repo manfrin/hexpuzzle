@@ -24,12 +24,16 @@ const store = new Vuex.Store({
     board: {},
     boardRadius: config.boardRadius
   },
+  comnputed: {
+    tileCount () {
+      return Object.kays(this.state.board).length
+    }
+  },
   actions: {
     generateBoard (context) {
-      console.log('generate')
+      context.commit('clearTiles')
       let newtileset = [].concat(tiles)
       let newBoard = {}
-      let counter = 0
       newtileset.sort(() => Math.random() - 0.5)
       for (let i = 0; i < config.boardWidth; i++) {
         for (let j = 0; j < config.boardWidth; j++) {
@@ -41,15 +45,16 @@ const store = new Vuex.Store({
             let tileType = newtileset.pop()
             // context.commit('addTile', {id, type: tileType.type, color: tileType.color})
             newBoard[id] = {id, type: tileType.type, color: tileType.color}
-            counter++
           }
         }
       }
       context.commit('addTiles', newBoard)
-      console.log(counter)
     },
     clearBoard (context) {
       context.commit('clearTiles')
+    },
+    deleteRandom (context) {
+      context.commit('deleteRandomTile')
     }
   },
   mutations: {
@@ -60,8 +65,11 @@ const store = new Vuex.Store({
       Vue.set(state.board, tile.id, tile)
     },
     clearTiles (state) {
-      Vue.delete(state, 'board')
-      Vue.set(state, 'board', {})
+      Vue.delete(state, 'board', {})
+    },
+    deleteRandomTile (state) {
+      let id = Object.keys(state.board)[0]
+      Vue.delete(state.board, id)
     }
   }
 })

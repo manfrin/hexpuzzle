@@ -6,7 +6,7 @@
       ref="gameBoard"
     >
     </canvas>
-    <slot></slot>
+    <slot v-on:clearBoard="clear"></slot>
   </div>
 </template>
 
@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     clear () {
+      console.log('clearing')
       this.provider.context.clearRect(0, 0, this.canvasSize, this.canvasSize)
     }
   }

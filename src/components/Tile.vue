@@ -102,13 +102,17 @@ export default {
     if (!this.provider.context) return
 
     const ctx = this.provider.context
+    // HEX
     ctx.beginPath()
-    ctx.moveTo(this.points[0].x, this.points[0].y)
+    // ctx.moveTo(this.points[0].x, this.points[0].y)
 
-    for (let i = 1; i < this.points.length; i++) {
-      ctx.lineTo(this.points[i].x, this.points[i].y)
-    }
-    ctx.lineTo(this.points[0].x, this.points[0].y)
+    // for (let i = 1; i < this.points.length; i++) {
+    //   ctx.lineTo(this.points[i].x, this.points[i].y)
+    // }
+    // ctx.lineTo(this.points[0].x, this.points[0].y)
+
+    // CIRCLE
+    ctx.arc(this.center.x, this.center.y, this.size / 2 - 10, 0, Math.PI * 2)
 
     if (this.type !== 'empty') {
       ctx.fillStyle = this.color
@@ -125,6 +129,9 @@ export default {
     }
 
     return true
+  },
+  beforeDestroy () {
+    this.$parent.clear()
   }
 }
 </script>
