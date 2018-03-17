@@ -14,7 +14,7 @@ for (let type of config.hexTypes) {
 let tileCount = 61
 
 for (let i = tiles.length; i <= tileCount; i++) {
-  tiles.push({type: 'empty', color: 'rgba(0,0,0,0)'})
+  tiles.push({type: 'empty', color: 'rgba(255,255,255,.2)'})
 }
 
 tiles.sort(() => Math.random() - 0.5)
