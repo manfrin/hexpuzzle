@@ -11,10 +11,10 @@ for (let type of config.hexTypes) {
   }
 }
 
-let tileCount = config.boardRadius * config.boardRadius * 6 + 1
-console.log(tileCount)
+let tileCount = 61
+
 for (let i = tiles.length; i <= tileCount; i++) {
-  tiles.push({type: 'empty', color: '#fff'})
+  tiles.push({type: 'empty', color: 'rgba(0,0,0,0)'})
 }
 
 tiles.sort(() => Math.random() - 0.5)
@@ -26,32 +26,36 @@ const store = new Vuex.Store({
   },
   actions: {
     generateBoard (context) {
+      console.log('generate')
       let newtileset = [].concat(tiles)
-      newtileset.sort(() => Math.random() - 0.5)
+      let newBoard = {}
       let counter = 0
+      newtileset.sort(() => Math.random() - 0.5)
       for (let i = 0; i < config.boardWidth; i++) {
         for (let j = 0; j < config.boardWidth; j++) {
           const q = i - config.boardRadius
           const r = j - config.boardRadius
           if (Math.abs(-q - r) <= config.boardRadius) {
             const id = `q${q}r${r}`
-            const nonce = Math.floor(Math.random() * 16777215).toString(16)
+            // const nonce = Math.floor(Math.random() * 16777215).toString(16)
             let tileType = newtileset.pop()
-            console.log(tileType)
-            console.log(counter)
-
-            setTimeout(() => {
-              context.commit('addTile', {id, type: tileType.type, nonce, color: tileType.color})
-            }, 850 * Math.cos(counter++))
+            // context.commit('addTile', {id, type: tileType.type, color: tileType.color})
+            newBoard[id] = {id, type: tileType.type, color: tileType.color}
+            counter++
           }
         }
       }
+      context.commit('addTiles', newBoard)
+      console.log(counter)
     },
     clearBoard (context) {
       context.commit('clearTiles')
     }
   },
   mutations: {
+    addTiles (state, tiles) {
+      Vue.set(state, 'board', tiles)
+    },
     addTile (state, tile) {
       Vue.set(state.board, tile.id, tile)
     },

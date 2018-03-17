@@ -33,21 +33,21 @@ module.exports = {
       'color': '#f00',
       'count': 8,
       'type': 'gem'
-    },
-    {
-      'color': '#abc',
-      'count': 6,
-      'type': 'news'
-    },
-    {
-      'color': '#cba',
-      'count': 6,
-      'type': 'moonshot'
-    },
-    {
-      'color': '#eee',
-      'count': 4,
-      'type': 'whale'
     }
+    // {
+    //   'color': '#abc',
+    //   'count': 6,
+    //   'type': 'news'
+    // },
+    // {
+    //   'color': '#cba',
+    //   'count': 6,
+    //   'type': 'moonshot'
+    // },
+    // {
+    //   'color': '#eee',
+    //   'count': 4,
+    //   'type': 'whale'
+    // }
   ]
 }

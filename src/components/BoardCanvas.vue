@@ -3,7 +3,6 @@
     <canvas
       :width="canvasSize"
       :height="canvasSize"
-      style="border:1px solid"
       ref="gameBoard"
     >
     </canvas>
@@ -33,6 +32,11 @@ export default {
   },
   mounted () {
     this.provider.context = this.$refs['gameBoard'].getContext('2d')
+  },
+  methods: {
+    clear () {
+      this.provider.context.clearRect(0, 0, this.canvasSize, this.canvasSize)
+    }
   }
 }
 </script>

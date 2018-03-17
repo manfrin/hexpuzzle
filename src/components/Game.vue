@@ -1,7 +1,7 @@
 <template>
   <div class="game">
-    <Controls />
-    <Board />
+    <div class="row"><Controls /></div>
+    <div class="row"><Board /></div>
   </div>
 </template>
 
@@ -15,5 +15,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+  .game {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .row {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
 </style>

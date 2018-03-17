@@ -4,7 +4,6 @@
       <Tile v-for="tile in tiles"
         :key="tile.id"
         :id="tile.id"
-        :nonce="tile.nonce"
         :type="tile.type"
         :color="tile.color"
       />

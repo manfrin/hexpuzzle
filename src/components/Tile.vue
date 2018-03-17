@@ -9,10 +9,6 @@ export default {
       required: true,
       type: String
     },
-    nonce: {
-      required: true,
-      type: String
-    },
     type: {
       required: true,
       type: String
@@ -26,10 +22,48 @@ export default {
     return {
       selected: false,
       fillColor: this.color,
-      size: config.hexWidth
+      size: config.hexWidth - 10
+    }
+  },
+  methods: {
+    getAdjacent (q, r) {
+      return this.getTile(this.x + q, this.y + r)
+    },
+    getTile (q, r) {
+      return this.$store.state.board[this.toTileID(q, r)]
+    },
+    toTileID (q, r) {
+      return `q${q}r${r}`
     }
   },
   computed: {
+    adjacentTiles () {
+      return [
+        this.getAdjacent(0, -1),
+        this.getAdjacent(1, -1),
+        this.getAdjacent(1, 0),
+        this.getAdjacent(0, 1),
+        this.getAdjacent(-1, 1),
+        this.getAdjacent(-1, 0)
+      ]
+    },
+    hasThreeEmptyAdjacent () {
+      let sequence = new Array(12)
+      for (let i = 0; i < 6; i++) {
+        if (!this.adjacentTiles[i] || this.adjacentTiles[i].type === 'empty') {
+          sequence[i] = 0
+          sequence[i + 6] = 0
+        } else {
+          sequence[i] = 1
+          sequence[i + 6] = 1
+        }
+      }
+      return !!sequence.join('').match(/000/)
+    },
+    isUsable () {
+      return (this.type !== 'empty') &&
+        this.hasThreeEmptyAdjacent
+    },
     x () {
       return +this.id.match(/^q(-?\d)r(-?\d)/)[1]
     },
@@ -74,11 +108,22 @@ export default {
     for (let i = 1; i < this.points.length; i++) {
       ctx.lineTo(this.points[i].x, this.points[i].y)
     }
-
     ctx.lineTo(this.points[0].x, this.points[0].y)
-    ctx.fillStyle = this.color
-    ctx.stroke()
-    ctx.fill()
+
+    if (this.type !== 'empty') {
+      ctx.fillStyle = this.color
+      ctx.fill()
+    } else {
+      console.log('empty cell')
+    }
+
+    if (this.isUsable) {
+      ctx.strokeStyle = '#FFF'
+      ctx.lineWidth = 3
+      ctx.lineJoin = 'round'
+      ctx.stroke()
+    }
+
     return true
   }
 }
