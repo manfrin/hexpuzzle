@@ -1,16 +1,24 @@
 <template>
-  <v-regular-polygon
-    v-if='isVisible'
-    :config='config'
-    @mouseover='onHover'
-    @mouseout='outHover'
-    @click='onClick'
+  <transition
+    @leave='leave'
+    :css='false'
+    :duration='1000'
   >
-  </v-regular-polygon>
+    <v-regular-polygon
+      ref='hex'
+      v-if='isVisible'
+      :config='config'
+      @mouseover='onHover'
+      @mouseout='outHover'
+      @click='onClick'
+    >
+    </v-regular-polygon>
+  </transition>
 </template>
 
 <script>
 import config from '@/board_config.js'
+import Konva from 'konva'
 
 export default {
   name: 'Tile',
@@ -22,6 +30,20 @@ export default {
     }
   },
   methods: {
+    leave (el, done) {
+      // if (this.isVisible) {
+      //   let hex = this.$refs.hex.getStage()
+      //   let stage = this.$parent.getStage()
+      //   let speed = 90
+      //   let anim = new Konva.Animation(function (frame) {
+      //     let angleDiff = frame.timeDiff * speed / 1000
+      //     hex.rotate(angleDiff)
+      //   }, stage)
+
+      //   anim.start()
+      //   setTimeout(done, 10000)
+      // }
+    },
     getAdjacent (q, r) {
       return this.getTile(this.x + q, this.y + r)
     },
@@ -40,7 +62,9 @@ export default {
       this.hover = false
     },
     onClick () {
-      this.$store.dispatch('clicked', this.tile.id)
+      if (this.isUsable) {
+        this.$store.dispatch('clicked', this.tile.id)
+      }
     }
   },
   computed: {
@@ -116,9 +140,20 @@ export default {
   },
   beforeDestroy () {
     console.log('dest')
+  },
+  mounted () {
+    if (this.selected) {
+      let hex = this.$refs.hex.getStage()
+      let stage = this.$parent.getStage()
+      let speed = 90
+      let anim = new Konva.Animation(function (frame) {
+        let angleDiff = frame.timeDiff * speed / 1000
+        hex.rotate(angleDiff)
+        hex.scale(angleDiff, angleDiff)
+      }, stage)
+
+      anim.start()
+    }
   }
 }
 </script>
-
-<style scoped>
-</style>

@@ -1,7 +1,7 @@
 <template>
   <div class="board">
     <v-stage :config='boardConfig'>
-      <v-layer>
+      <v-layer ref='layer'>
         <Tile v-for='tile in tiles'
           :key='tile.id'
           :tile='tile'
@@ -24,15 +24,11 @@ Vue.use(VueKonva)
 export default {
   name: 'Board',
   components: {Tile},
+  props: ['tiles'],
   data () {
     return {
       boardConfig: Config.configKonva,
       circleConfig: Config.configCircle
-    }
-  },
-  computed: {
-    tiles () {
-      return this.$store.state.board
     }
   }
 }

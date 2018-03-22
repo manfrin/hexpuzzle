@@ -57,8 +57,8 @@ const store = new Vuex.Store({
   },
   mutations: {
     matchTile (state, tileId) {
-      Vue.set(state.board, tileId, {id: tileId, type: 'empty', color: '#000'})
-      Vue.set(state.board, state.selected, {id: state.selected, type: 'empty', color: '#000'})
+      Vue.delete(state.board, tileId)
+      Vue.delete(state.board, state.selected)
       Vue.set(state, 'selected', '')
     },
     selectTile (state, tileId) {

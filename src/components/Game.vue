@@ -1,7 +1,9 @@
 <template>
   <div class="game">
     <div class="row"><Controls /></div>
-    <div class="row"><Board /></div>
+    <div class="row"><Board
+      :tiles='tiles'
+     /></div>
   </div>
 </template>
 
@@ -11,7 +13,12 @@ import Controls from './Controls'
 
 export default {
   name: 'Game',
-  components: {Board, Controls}
+  components: {Board, Controls},
+  computed: {
+    tiles () {
+      return this.$store.state.board
+    }
+  }
 }
 </script>
 
