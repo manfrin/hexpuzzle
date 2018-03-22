@@ -43,5 +43,17 @@ module.exports = {
       'count': 13,
       'type': 'empty'
     }
-  ]
+  ],
+  configKonva: {
+    width: 580,
+    height: 580
+  },
+  configCircle: {
+    x: 100,
+    y: 100,
+    radius: 70,
+    fill: 'red',
+    stroke: 'black',
+    strokeWidth: 4
+  }
 }

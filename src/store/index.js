@@ -15,8 +15,7 @@ tiles.sort(() => Math.random() - 0.5)
 const store = new Vuex.Store({
   state: {
     board: {},
-    boardRadius: config.boardRadius,
-    lastRedrawn: 'none'
+    selected: ''
   },
   comnputed: {
     tileCount () {
@@ -35,9 +34,7 @@ const store = new Vuex.Store({
           const r = j - config.boardRadius
           if (Math.abs(-q - r) <= config.boardRadius) {
             const id = `q${q}r${r}`
-            // const nonce = Math.floor(Math.random() * 16777215).toString(16)
             let tileType = newtileset.pop()
-            // context.commit('addTile', {id, type: tileType.type, color: tileType.color})
             newBoard[id] = {id, type: tileType.type, color: tileType.color}
           }
         }
@@ -50,11 +47,23 @@ const store = new Vuex.Store({
     deleteRandom (context) {
       context.commit('deleteRandomTile')
     },
-    drewTile (context, id) {
-      context.commit('setLastRedrawn', id)
+    clicked (context, id) {
+      if (this.state.selected.length > 0) {
+        context.commit('matchTile', id)
+      } else {
+        context.commit('selectTile', id)
+      }
     }
   },
   mutations: {
+    matchTile (state, tileId) {
+      Vue.set(state.board, tileId, {id: tileId, type: 'empty', color: '#000'})
+      Vue.set(state.board, state.selected, {id: state.selected, type: 'empty', color: '#000'})
+      Vue.set(state, 'selected', '')
+    },
+    selectTile (state, tileId) {
+      Vue.set(state, 'selected', tileId)
+    },
     addTiles (state, tiles) {
       Vue.set(state, 'board', tiles)
     },
@@ -68,10 +77,7 @@ const store = new Vuex.Store({
       let len = Object.keys(state.board).length
       let rand = Math.floor(Math.random() * len)
       let id = Object.keys(state.board)[rand]
-      Vue.set(state.board, id, {id: id, type: 'empty', color: '#000', clearThenDraw: true})
-    },
-    setLastRedrawn (state, tileId) {
-      Vue.set(state, 'lastRedrawn', tileId)
+      Vue.set(state.board, id, {id: id, type: 'empty', color: '#000'})
     }
   }
 })

@@ -1,43 +1,24 @@
+<template>
+  <v-regular-polygon
+    v-if='isVisible'
+    :config='config'
+    @mouseover='onHover'
+    @mouseout='outHover'
+    @click='onClick'
+  >
+  </v-regular-polygon>
+</template>
+
 <script>
 import config from '@/board_config.js'
 
 export default {
   name: 'Tile',
-  inject: ['provider'],
-  props: {
-    id: {
-      required: true,
-      type: String
-    },
-    type: {
-      required: true,
-      type: String
-    },
-    color: {
-      required: true,
-      type: String
-    },
-    lastRedrawn: {
-      required: false,
-      type: String
-    }
-  },
+  props: ['tile'],
   data () {
     return {
-      selected: false,
-      fillColor: this.color,
-      size: config.hexWidth - 10
-    }
-  },
-  watch: {
-    type () {
-      this.clearBoundingSquare()
-      this.draw()
-      this.$store.dispatch('drewTile', this.id)
-    },
-    neighborWasRedrawn () {
-      console.log('nr')
-      this.draw()
+      size: config.hexWidth / 2 - 4,
+      hover: false
     }
   },
   methods: {
@@ -50,50 +31,16 @@ export default {
     toTileID (q, r) {
       return `q${q}r${r}`
     },
-    drawAdjacent () {
-      for (let id in this.adjacentTiles) {
-        const tile = this.adjacentTiles[id]
-        if (tile) {
-          this.$store.dispatch('drawTile', tile.id)
-        }
-      }
-    },
-    clearBoundingSquare () {
-      if (!this.provider.context) return
-
-      const ctx = this.provider.context
-      const startX = this.center.x - (this.size / 2) - 5
-      const startY = this.center.y - (this.size / 2) - 5
-
-      ctx.clearRect(startX, startY, this.size + 10, this.size + 10)
-    },
-    draw () {
-      if (!this.provider.context) return
-
-      const ctx = this.provider.context
-      ctx.beginPath()
-
-      if (this.type === 'gem') {
-        ctx.moveTo(this.points[0].x, this.points[0].y)
-
-        for (let i = 1; i < this.points.length; i++) {
-          ctx.lineTo(this.points[i].x, this.points[i].y)
-        }
-        ctx.lineTo(this.points[0].x, this.points[0].y)
-      } else {
-        ctx.arc(this.center.x, this.center.y, this.size / 2 - 20, 0, Math.PI * 2)
-      }
-
-      ctx.fillStyle = this.color
-      // ctx.globalCompositeOperation = 'overlay'
-      ctx.fill()
-
+    onHover () {
       if (this.isUsable) {
-        ctx.lineWidth = 3
-        ctx.strokeStyle = '#FFF'
-        ctx.lineJoin = 'round'
-        ctx.stroke()
+        this.hover = true
       }
+    },
+    outHover () {
+      this.hover = false
+    },
+    onClick () {
+      this.$store.dispatch('clicked', this.tile.id)
     }
   },
   computed: {
@@ -106,19 +53,6 @@ export default {
         this.getAdjacent(-1, 1),
         this.getAdjacent(-1, 0)
       ]
-    },
-    neighborIds () {
-      return [
-        this.toTileID(this.x, this.y - 1),
-        this.toTileID(this.x + 1, this.y - 1),
-        this.toTileID(this.x + 1, this.y),
-        this.toTileID(this.x, this.y + 1),
-        this.toTileID(this.x - 1, this.y + 1),
-        this.toTileID(this.x - 1, this.y)
-      ]
-    },
-    neighborWasRedrawn () {
-      return !!this.neighborIds.join('').match(this.lastRedrawn)
     },
     hasThreeEmptyAdjacent () {
       let sequence = new Array(12)
@@ -134,14 +68,37 @@ export default {
       return !!sequence.join('').match(/000/)
     },
     isUsable () {
-      return (this.type === 'gem') &&
+      return (this.tile.type === 'gem') &&
         this.hasThreeEmptyAdjacent
     },
+    config () {
+      return {
+        x: this.center.x,
+        y: this.center.y,
+        sides: 6,
+        radius: this.size,
+        fill: this.tile.color,
+        stroke: this.strokeColor,
+        strokeWidth: this.strokeWidth
+      }
+    },
+    strokeWidth () {
+      return this.isUsable ? 4 : 0
+    },
+    strokeColor () {
+      return this.selected ? 'green'
+        : this.hover ? 'red'
+          : this.isUsable ? 'white'
+            : this.tile.color
+    },
+    isVisible () {
+      return this.tile.type !== 'empty'
+    },
     x () {
-      return +this.id.match(/^q(-?\d)r(-?\d)/)[1]
+      return +this.tile.id.match(/^q(-?\d)r(-?\d)/)[1]
     },
     y () {
-      return +this.id.match(/^q(-?\d)r(-?\d)/)[2]
+      return +this.tile.id.match(/^q(-?\d)r(-?\d)/)[2]
     },
     z () {
       return -this.x - this.y
@@ -153,28 +110,12 @@ export default {
       let y = size * (3 / 2) * this.y + centerPos
       return {x, y}
     },
-    canvasSize () {
-      return config.boardWidth * config.hexWidth
-    },
-    positioningOffset () {
-      return 200
-    },
-    points () {
-      let points = []
-      for (let i = 0; i < 6; i++) {
-        let degree = 60 * i
-        let radian = Math.PI / 180 * degree
-        let px = this.center.x + this.size / 2 * Math.sin(radian)
-        let py = this.center.y + this.size / 2 * Math.cos(radian)
-        points.push({x: px, y: py})
-      }
-      return points
+    selected () {
+      return this.$store.state.selected === this.tile.id
     }
   },
-  render () {
-    console.log('render')
-    this.draw()
-    return true
+  beforeDestroy () {
+    console.log('dest')
   }
 }
 </script>
