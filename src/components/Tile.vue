@@ -16,6 +16,10 @@ export default {
     color: {
       required: true,
       type: String
+    },
+    lastRedrawn: {
+      required: false,
+      type: String
     }
   },
   data () {
@@ -23,6 +27,17 @@ export default {
       selected: false,
       fillColor: this.color,
       size: config.hexWidth - 10
+    }
+  },
+  watch: {
+    type () {
+      this.clearBoundingSquare()
+      this.draw()
+      this.$store.dispatch('drewTile', this.id)
+    },
+    neighborWasRedrawn () {
+      console.log('nr')
+      this.draw()
     }
   },
   methods: {
@@ -34,6 +49,51 @@ export default {
     },
     toTileID (q, r) {
       return `q${q}r${r}`
+    },
+    drawAdjacent () {
+      for (let id in this.adjacentTiles) {
+        const tile = this.adjacentTiles[id]
+        if (tile) {
+          this.$store.dispatch('drawTile', tile.id)
+        }
+      }
+    },
+    clearBoundingSquare () {
+      if (!this.provider.context) return
+
+      const ctx = this.provider.context
+      const startX = this.center.x - (this.size / 2) - 5
+      const startY = this.center.y - (this.size / 2) - 5
+
+      ctx.clearRect(startX, startY, this.size + 10, this.size + 10)
+    },
+    draw () {
+      if (!this.provider.context) return
+
+      const ctx = this.provider.context
+      ctx.beginPath()
+
+      if (this.type === 'gem') {
+        ctx.moveTo(this.points[0].x, this.points[0].y)
+
+        for (let i = 1; i < this.points.length; i++) {
+          ctx.lineTo(this.points[i].x, this.points[i].y)
+        }
+        ctx.lineTo(this.points[0].x, this.points[0].y)
+      } else {
+        ctx.arc(this.center.x, this.center.y, this.size / 2 - 20, 0, Math.PI * 2)
+      }
+
+      ctx.fillStyle = this.color
+      // ctx.globalCompositeOperation = 'overlay'
+      ctx.fill()
+
+      if (this.isUsable) {
+        ctx.lineWidth = 3
+        ctx.strokeStyle = '#FFF'
+        ctx.lineJoin = 'round'
+        ctx.stroke()
+      }
     }
   },
   computed: {
@@ -46,6 +106,19 @@ export default {
         this.getAdjacent(-1, 1),
         this.getAdjacent(-1, 0)
       ]
+    },
+    neighborIds () {
+      return [
+        this.toTileID(this.x, this.y - 1),
+        this.toTileID(this.x + 1, this.y - 1),
+        this.toTileID(this.x + 1, this.y),
+        this.toTileID(this.x, this.y + 1),
+        this.toTileID(this.x - 1, this.y + 1),
+        this.toTileID(this.x - 1, this.y)
+      ]
+    },
+    neighborWasRedrawn () {
+      return !!this.neighborIds.join('').match(this.lastRedrawn)
     },
     hasThreeEmptyAdjacent () {
       let sequence = new Array(12)
@@ -61,7 +134,7 @@ export default {
       return !!sequence.join('').match(/000/)
     },
     isUsable () {
-      return (this.type !== 'empty') &&
+      return (this.type === 'gem') &&
         this.hasThreeEmptyAdjacent
     },
     x () {
@@ -99,36 +172,9 @@ export default {
     }
   },
   render () {
-    if (!this.provider.context) return
-
-    const ctx = this.provider.context
-    ctx.beginPath()
-
-    if (this.type === 'gem') {
-      ctx.moveTo(this.points[0].x, this.points[0].y)
-
-      for (let i = 1; i < this.points.length; i++) {
-        ctx.lineTo(this.points[i].x, this.points[i].y)
-      }
-      ctx.lineTo(this.points[0].x, this.points[0].y)
-    } else {
-      ctx.arc(this.center.x, this.center.y, this.size / 2 - 20, 0, Math.PI * 2)
-    }
-
-    ctx.fillStyle = this.color
-    ctx.fill()
-
-    if (this.isUsable) {
-      ctx.strokeStyle = '#FFF'
-      ctx.lineWidth = 3
-      ctx.lineJoin = 'round'
-      ctx.stroke()
-    }
-
+    console.log('render')
+    this.draw()
     return true
-  },
-  beforeDestroy () {
-    this.$parent.clear()
   }
 }
 </script>

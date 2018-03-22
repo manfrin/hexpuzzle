@@ -28,6 +28,9 @@ export default {
   computed: {
     canvasSize () {
       return config.boardWidth * config.hexWidth
+    },
+    tiles () {
+      return this.$store.state.board
     }
   },
   mounted () {
@@ -35,7 +38,6 @@ export default {
   },
   methods: {
     clear () {
-      console.log('clearing')
       this.provider.context.clearRect(0, 0, this.canvasSize, this.canvasSize)
     }
   }

@@ -1,3 +1,7 @@
+// 3r^2 - 3r + 1
+// 3*25 - 15 + 1
+// 75 - 15 + 1 = 61
+
 module.exports = {
   'boardRadius': 4,
   'boardWidth': 9,
@@ -33,21 +37,11 @@ module.exports = {
       'color': '#757389',
       'count': 8,
       'type': 'gem'
+    },
+    {
+      'color': '#000',
+      'count': 13,
+      'type': 'empty'
     }
-    // {
-    //   'color': '#abc',
-    //   'count': 6,
-    //   'type': 'news'
-    // },
-    // {
-    //   'color': '#cba',
-    //   'count': 6,
-    //   'type': 'moonshot'
-    // },
-    // {
-    //   'color': '#eee',
-    //   'count': 4,
-    //   'type': 'whale'
-    // }
   ]
 }

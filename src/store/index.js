@@ -10,19 +10,13 @@ for (let type of config.hexTypes) {
     tiles.push({type: type.type, color: type.color})
   }
 }
-
-let tileCount = 61
-
-for (let i = tiles.length; i <= tileCount; i++) {
-  tiles.push({type: 'empty', color: 'rgba(255,255,255,.2)'})
-}
-
 tiles.sort(() => Math.random() - 0.5)
 
 const store = new Vuex.Store({
   state: {
     board: {},
-    boardRadius: config.boardRadius
+    boardRadius: config.boardRadius,
+    lastRedrawn: 'none'
   },
   comnputed: {
     tileCount () {
@@ -55,6 +49,9 @@ const store = new Vuex.Store({
     },
     deleteRandom (context) {
       context.commit('deleteRandomTile')
+    },
+    drewTile (context, id) {
+      context.commit('setLastRedrawn', id)
     }
   },
   mutations: {
@@ -68,8 +65,13 @@ const store = new Vuex.Store({
       Vue.delete(state, 'board', {})
     },
     deleteRandomTile (state) {
-      let id = Object.keys(state.board)[0]
-      Vue.delete(state.board, id)
+      let len = Object.keys(state.board).length
+      let rand = Math.floor(Math.random() * len)
+      let id = Object.keys(state.board)[rand]
+      Vue.set(state.board, id, {id: id, type: 'empty', color: '#000', clearThenDraw: true})
+    },
+    setLastRedrawn (state, tileId) {
+      Vue.set(state, 'lastRedrawn', tileId)
     }
   }
 })

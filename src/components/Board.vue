@@ -6,6 +6,7 @@
         :id="tile.id"
         :type="tile.type"
         :color="tile.color"
+        :lastRedrawn="lastRedrawn"
       />
     </BoardCanvas>
   </div>
@@ -21,6 +22,9 @@ export default {
   computed: {
     tiles () {
       return this.$store.state.board
+    },
+    lastRedrawn () {
+      return this.$store.state.lastRedrawn
     }
   }
 }
