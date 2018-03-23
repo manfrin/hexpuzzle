@@ -68,6 +68,9 @@ export default {
     }
   },
   computed: {
+    hexType () {
+      return this.$store.state.hexes[this.tile.type]
+    },
     adjacentTiles () {
       return [
         this.getAdjacent(0, -1),
@@ -92,7 +95,7 @@ export default {
       return !!sequence.join('').match(/000/)
     },
     isUsable () {
-      return (this.tile.type === 'gem') &&
+      return (this.tile.type !== 'empty') &&
         this.hasThreeEmptyAdjacent
     },
     config () {
@@ -101,7 +104,7 @@ export default {
         y: this.center.y,
         sides: 6,
         radius: this.size,
-        fill: this.tile.color,
+        fill: this.hexType.color,
         stroke: this.strokeColor,
         strokeWidth: this.strokeWidth
       }
@@ -113,7 +116,7 @@ export default {
       return this.selected ? 'green'
         : this.hover ? 'red'
           : this.isUsable ? 'white'
-            : this.tile.color
+            : this.hexType.color
     },
     isVisible () {
       return this.tile.type !== 'empty'
@@ -137,9 +140,6 @@ export default {
     selected () {
       return this.$store.state.selected === this.tile.id
     }
-  },
-  beforeDestroy () {
-    console.log('dest')
   },
   mounted () {
     if (this.selected) {

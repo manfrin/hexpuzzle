@@ -7,43 +7,56 @@ module.exports = {
   'boardWidth': 9,
   'hexWidth': 64,
   'hexSpacing': 3,
-  'hexTypes': [
-    {
-      'color': '#151E3F',
-      'count': 8,
-      'type': 'gem'
+  hexTypes: {
+    blueGem: {
+      type: 'blueGem',
+      count: 8,
+      color: '#00649b',
+      matches: ['blueGem']
     },
-    {
-      'color': '#030027',
-      'count': 8,
-      'type': 'gem'
+    pinkGem: {
+      type: 'pinkGem',
+      count: 8,
+      color: '#bc4577',
+      matches: ['pinkGem']
     },
-    {
-      'color': '#F2F3D9',
-      'count': 8,
-      'type': 'gem'
+    redGem: {
+      type: 'redGem',
+      count: 8,
+      color: '#bd0000',
+      matches: ['redGem']
     },
-    {
-      'color': '#DC9E82',
-      'count': 8,
-      'type': 'gem'
+    orangeGem: {
+      type: 'orangeGem',
+      count: 8,
+      color: '#ff7e5a',
+      matches: ['orangeGem']
     },
-    {
-      'color': '#C16E70',
-      'count': 8,
-      'type': 'gem'
+    yellowGem: {
+      type: 'yellowGem',
+      count: 8,
+      color: '#ffc69a',
+      matches: ['yellowGem']
     },
-    {
-      'color': '#757389',
-      'count': 8,
-      'type': 'gem'
+    metal: {
+      type: 'metal',
+      count: 4,
+      color: '#333',
+      matches: ['salt']
     },
-    {
-      'color': '#000',
-      'count': 13,
-      'type': 'empty'
+    salt: {
+      type: 'salt',
+      count: 4,
+      color: '#ccc',
+      matches: ['metal']
+    },
+    empty: {
+      type: 'empty',
+      count: 13,
+      color: '#fff',
+      matches: []
     }
-  ],
+  },
   configKonva: {
     width: 580,
     height: 580

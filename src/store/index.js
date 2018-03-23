@@ -5,9 +5,11 @@ import config from '../board_config.js'
 Vue.use(Vuex)
 
 let tiles = []
-for (let type of config.hexTypes) {
+let keys = Object.keys(config.hexTypes)
+for (let j = 0; j < keys.length; j++) {
+  let type = config.hexTypes[keys[j]]
   for (let i = 0; i < type.count; i++) {
-    tiles.push({type: type.type, color: type.color})
+    tiles.push({type: type.type})
   }
 }
 tiles.sort(() => Math.random() - 0.5)
@@ -15,7 +17,8 @@ tiles.sort(() => Math.random() - 0.5)
 const store = new Vuex.Store({
   state: {
     board: {},
-    selected: ''
+    selected: '',
+    hexes: config.hexTypes
   },
   comnputed: {
     tileCount () {
@@ -27,7 +30,7 @@ const store = new Vuex.Store({
       context.commit('clearTiles')
       let newtileset = [].concat(tiles)
       let newBoard = {}
-      newtileset.sort(() => Math.random() - 0.5)
+      // newtileset.sort(() => Math.random() - 0.5)
       for (let i = 0; i < config.boardWidth; i++) {
         for (let j = 0; j < config.boardWidth; j++) {
           const q = i - config.boardRadius
@@ -35,7 +38,7 @@ const store = new Vuex.Store({
           if (Math.abs(-q - r) <= config.boardRadius) {
             const id = `q${q}r${r}`
             let tileType = newtileset.pop()
-            newBoard[id] = {id, type: tileType.type, color: tileType.color}
+            newBoard[id] = {id, type: tileType.type}
           }
         }
       }
@@ -49,7 +52,14 @@ const store = new Vuex.Store({
     },
     clicked (context, id) {
       if (this.state.selected.length > 0) {
-        context.commit('matchTile', id)
+        let selected = this.state.hexes[this.state.board[this.state.selected].type]
+        let secondClick = this.state.hexes[this.state.board[id].type]
+        let matching = selected.matches.indexOf(secondClick.type) >= 0
+        if (matching) {
+          context.commit('matchTile', id)
+        } else {
+          context.commit('deselect')
+        }
       } else {
         context.commit('selectTile', id)
       }
@@ -77,7 +87,10 @@ const store = new Vuex.Store({
       let len = Object.keys(state.board).length
       let rand = Math.floor(Math.random() * len)
       let id = Object.keys(state.board)[rand]
-      Vue.set(state.board, id, {id: id, type: 'empty', color: '#000'})
+      Vue.set(state.board, id, {id: id, type: 'empty'})
+    },
+    deselect (state) {
+      Vue.set(state, 'selected', '')
     }
   }
 })
