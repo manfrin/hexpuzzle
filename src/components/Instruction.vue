@@ -9,8 +9,8 @@
           <v-regular-polygon
             ref='hex'
             :config='config'
-            @mousedown='highlight(tile.type)'
-            @mouseup='unhighlight'
+            @mouseover='highlight(tile.type)'
+            @mouseout='unhighlight'
           >
           </v-regular-polygon>
         </v-layer>
@@ -28,8 +28,8 @@
             v-for='(subtile, i) in tile.matches'
             :key='subtile'
             :config='subtileConfig(subtile, i)'
-            @mousedown='highlight(subtile)'
-            @mouseup='unhighlight'
+            @mouseover='highlight(subtile)'
+            @mouseout='unhighlight'
           />
         </v-layer>
       </v-stage>
