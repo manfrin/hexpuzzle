@@ -9,50 +9,68 @@ module.exports = {
   'hexSpacing': 3,
   hexTypes: {
     blueGem: {
+      name: 'Sapphire',
       type: 'blueGem',
       count: 8,
       color: '#00649b',
-      matches: ['blueGem']
+      matches: ['blueGem', 'bomb']
     },
     pinkGem: {
+      name: 'Garnet',
       type: 'pinkGem',
       count: 8,
       color: '#bc4577',
-      matches: ['pinkGem']
+      matches: ['pinkGem', 'bomb']
     },
     redGem: {
+      name: 'Ruby',
       type: 'redGem',
       count: 8,
       color: '#bd0000',
-      matches: ['redGem']
+      matches: ['redGem', 'bomb']
     },
     orangeGem: {
+      name: 'Citrine',
       type: 'orangeGem',
       count: 8,
       color: '#ff7e5a',
-      matches: ['orangeGem']
+      matches: ['orangeGem', 'bomb']
     },
     yellowGem: {
+      name: 'Amber',
       type: 'yellowGem',
       count: 8,
       color: '#ffc69a',
-      matches: ['yellowGem']
+      matches: ['yellowGem', 'bomb']
     },
     metal: {
+      name: 'Ore',
       type: 'metal',
       count: 4,
       color: '#333',
+      sides: 5,
       matches: ['salt']
     },
     salt: {
+      name: 'Flux',
       type: 'salt',
       count: 4,
       color: '#ccc',
+      sides: 5,
       matches: ['metal']
     },
+    bomb: {
+      name: 'Bomb',
+      type: 'bomb',
+      count: 4,
+      color: '#c5e29e',
+      sides: 3,
+      matches: ['blueGem', 'yellowGem', 'orangeGem', 'redGem', 'pinkGem', 'bomb']
+    },
     empty: {
+      name: 'Empty',
       type: 'empty',
-      count: 13,
+      count: 9,
       color: '#fff',
       matches: []
     }

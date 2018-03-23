@@ -10,6 +10,7 @@
       :config='config'
       @mouseover='onHover'
       @mouseout='outHover'
+      @tap='onClick'
       @click='onClick'
     >
     </v-regular-polygon>
@@ -110,15 +111,19 @@ export default {
       return (this.tile.type !== 'empty') &&
         this.hasThreeEmptyAdjacent
     },
+    sides () {
+      return this.hexType.sides || 6
+    },
     config () {
       return {
         x: this.center.x,
         y: this.center.y,
-        sides: 6,
+        sides: this.sides,
         radius: this.size,
         fill: this.hexType.color,
         stroke: this.strokeColor,
-        strokeWidth: this.strokeWidth
+        strokeWidth: this.strokeWidth,
+        opacity: this.opacity
       }
     },
     strokeWidth () {
@@ -151,16 +156,28 @@ export default {
     },
     selected () {
       return this.$store.state.selected === this.tile.id
+    },
+    opacity () {
+      return this.otherHighlighted ? 0.1
+        : this.highlighted ? 1.0 : 0.9
+    },
+    highlighted () {
+      return this.$store.state.highlighted === this.tile.type
+    },
+    otherHighlighted () {
+      return this.$store.state.highlighted.length > 0 && !this.highlighted
     }
   },
   mounted () {
     if (this.isVisible) {
       let hex = this.$refs.hex.getStage()
       let stage = this.$parent.getStage()
-      let speed = 90
       let anim = new Konva.Animation(function (frame) {
-        let angleDiff = frame.timeDiff * speed / 1000
-        hex.rotate(angleDiff)
+        // let speed = 90
+        // let angleDiff = frame.timeDiff * speed / 1000
+        // hex.rotate(angleDiff)
+        let scale = Math.sin(frame.time * Math.PI / 450) * 0.1 + 0.9
+        hex.scale({x: scale, y: scale})
       }, stage)
 
       this.anim = anim

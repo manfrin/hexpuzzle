@@ -18,6 +18,7 @@ const store = new Vuex.Store({
   state: {
     board: {},
     selected: '',
+    highlighted: '',
     hexes: config.hexTypes
   },
   comnputed: {
@@ -63,9 +64,21 @@ const store = new Vuex.Store({
       } else {
         context.commit('selectTile', id)
       }
+    },
+    highlightTile (context, type) {
+      context.commit('highlight', type)
+    },
+    unhighlightTile (context) {
+      context.commit('unhighlight')
     }
   },
   mutations: {
+    highlight (state, type) {
+      Vue.set(state, 'highlighted', type)
+    },
+    unhighlight (state) {
+      Vue.set(state, 'highlighted', '')
+    },
     matchTile (state, tileId) {
       Vue.delete(state.board, tileId)
       Vue.delete(state.board, state.selected)
