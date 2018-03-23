@@ -30,7 +30,7 @@ const store = new Vuex.Store({
       context.commit('clearTiles')
       let newtileset = [].concat(tiles)
       let newBoard = {}
-      // newtileset.sort(() => Math.random() - 0.5)
+      newtileset.sort(() => Math.random() - 0.5)
       for (let i = 0; i < config.boardWidth; i++) {
         for (let j = 0; j < config.boardWidth; j++) {
           const q = i - config.boardRadius
@@ -55,10 +55,10 @@ const store = new Vuex.Store({
         let selected = this.state.hexes[this.state.board[this.state.selected].type]
         let secondClick = this.state.hexes[this.state.board[id].type]
         let matching = selected.matches.indexOf(secondClick.type) >= 0
-        if (matching) {
-          context.commit('matchTile', id)
-        } else {
+        if (!matching || this.state.selected === id) {
           context.commit('deselect')
+        } else {
+          context.commit('matchTile', id)
         }
       } else {
         context.commit('selectTile', id)

@@ -26,7 +26,8 @@ export default {
   data () {
     return {
       size: config.hexWidth / 2 - 4,
-      hover: false
+      hover: false,
+      anim: {start () {}, stop () {}}
     }
   },
   methods: {
@@ -68,6 +69,9 @@ export default {
     }
   },
   computed: {
+    selectedTile () {
+      return this.$store.state.selected
+    },
     hexType () {
       return this.$store.state.hexes[this.tile.type]
     },
@@ -93,6 +97,14 @@ export default {
         }
       }
       return !!sequence.join('').match(/000/)
+    },
+    isMatchable () {
+      if ((this.selectedTile.length === 0) || (this.selected)) {
+        return false
+      } else {
+        let sTile = this.$store.state.board[this.selectedTile]
+        return this.hexType.matches.indexOf(sTile.type) >= 0
+      }
     },
     isUsable () {
       return (this.tile.type !== 'empty') &&
@@ -142,17 +154,23 @@ export default {
     }
   },
   mounted () {
-    if (this.selected) {
+    if (this.isVisible) {
       let hex = this.$refs.hex.getStage()
       let stage = this.$parent.getStage()
       let speed = 90
       let anim = new Konva.Animation(function (frame) {
         let angleDiff = frame.timeDiff * speed / 1000
         hex.rotate(angleDiff)
-        hex.scale(angleDiff, angleDiff)
       }, stage)
 
-      anim.start()
+      this.anim = anim
+    }
+  },
+  updated () {
+    if (this.isMatchable && this.isUsable) {
+      this.anim.start()
+    } else {
+      this.anim.stop()
     }
   }
 }
